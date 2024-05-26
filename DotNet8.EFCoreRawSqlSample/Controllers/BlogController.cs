@@ -3,25 +3,25 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DotNet8.EFCoreRawSqlSample.Controllers
+namespace DotNet8.EFCoreRawSqlSample.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class BlogController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BlogController : ControllerBase
+    private readonly AppDbContext _appDbContext;
+
+    public BlogController(AppDbContext appDbContext)
     {
-        private readonly AppDbContext _appDbContext;
+        _appDbContext = appDbContext;
+    }
 
-        public BlogController(AppDbContext appDbContext)
+    [HttpGet]
+    public IActionResult GetBlogs()
+    {
+        try
         {
-            _appDbContext = appDbContext;
-        }
-
-        [HttpGet]
-        public IActionResult GetBlogs()
-        {
-            try
-            {
-                string query = @"
+            string query = @"
         SELECT [BlogId]
               ,[BlogTitle]
               ,[BlogAuthor]
@@ -29,17 +29,16 @@ namespace DotNet8.EFCoreRawSqlSample.Controllers
         FROM [dbo].[Tbl_blog]
         ORDER BY BlogId DESC";
 
-                var lst = _appDbContext.TblBlogs
-                    .FromSqlRaw(query)
-                    .AsNoTracking()
-                    .ToList();
+            var lst = _appDbContext.TblBlogs
+                .FromSqlRaw(query)
+                .AsNoTracking()
+                .ToList();
 
-                return Ok(lst);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return Ok(lst);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }
