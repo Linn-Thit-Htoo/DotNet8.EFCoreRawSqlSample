@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DotNet8.EFCoreRawSqlSample.Models;
+﻿namespace DotNet8.EFCoreRawSqlSample.Models;
 
 public partial class TblBlog
 {
